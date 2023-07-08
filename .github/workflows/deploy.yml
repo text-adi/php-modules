@@ -5,8 +5,7 @@ on:
     branches:
       - main
 env:
-  IMAGE_NAME: <name-images>
-  PREFIX: <version>
+  IMAGE_NAME: php-modules
 
 jobs:
   build:
@@ -92,11 +91,11 @@ jobs:
           platforms: linux/amd64
           file: ${{ matrix.include.dockerfile }}
           build-args: |
-            IMAGE=${{ matrix.dockerfile.IMAGE }}
-            PHP_BUILD_VERSION=${{ matrix.dockerfile.PHP_BUILD_VERSION }}
-            PHP_EXTENSION_DIR=${{ matrix.dockerfile.PHP_EXTENSION_DIR }}
+            IMAGE=${{ matrix.include.IMAGE }}
+            PHP_BUILD_VERSION=${{ matrix.include.PHP_BUILD_VERSION }}
+            PHP_EXTENSION_DIR=${{ matrix.include.PHP_EXTENSION_DIR }}
           push: true
           tags: |
-            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ matrix.dockerfile.NAME }}
+            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ matrix.include.NAME }}
           cache-from: type=gha,mode=max
           cache-to: type=gha,mode=max
