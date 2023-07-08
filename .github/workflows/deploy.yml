@@ -103,5 +103,5 @@ jobs:
           push: true
           tags: |
             ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ matrix.NAME }}
-          cache-from: type=gha,mode=max,${{ runner.os }}-${{ matrix.NAME }}-${{ hashFiles($matrix.dockerfile) }}
-          cache-to: type=gha,mode=max,${{ runner.os }}-${{ matrix.NAME }}-${{ hashFiles($matrix.dockerfile) }}
+          cache-from: type=gha,mode=max,${{ runner.os }}-${{ matrix.NAME }}-${{ hashFiles(matrix.dockerfile) }}
+          cache-to: type=gha,mode=max,${{ runner.os }}-${{ matrix.NAME }}-${{ hashFiles(matrix.dockerfile) }}
