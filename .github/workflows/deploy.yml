@@ -89,13 +89,13 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
-          file: ${{ matrix.include.dockerfile }}
+          file: ${{ matrix.dockerfile }}
           build-args: |
-            IMAGE=${{ matrix.include.IMAGE }}
-            PHP_BUILD_VERSION=${{ matrix.include.PHP_BUILD_VERSION }}
-            PHP_EXTENSION_DIR=${{ matrix.include.PHP_EXTENSION_DIR }}
+            IMAGE=${{ matrix.IMAGE }}
+            PHP_BUILD_VERSION=${{ matrix.PHP_BUILD_VERSION }}
+            PHP_EXTENSION_DIR=${{ matrix.PHP_EXTENSION_DIR }}
           push: true
           tags: |
-            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ matrix.include.NAME }}
+            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ matrix.NAME }}
           cache-from: type=gha,mode=max
           cache-to: type=gha,mode=max
