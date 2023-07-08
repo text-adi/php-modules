@@ -1,0 +1,375 @@
+# Set this args
+ARG IMAGE=php:<version>-fpm-alpine
+ARG PHP_BUILD_VERSION=<version>
+ARG PHP_EXTENSION_DIR='php -i | grep "extension_dir" | grep ^extension_dir | cut -d " " -f 3'
+
+
+FROM ${IMAGE} AS ioncube
+
+ARG PHP_EXTENSION_DIR=$PHP_EXTENSION_DIR
+ARG PHP_EXTENSION_DIR_OLD='/usr/local/lib/php/extensions/*'
+ARG PHP_BUILD_VERSION=$PHP_BUILD_VERSION
+ARG PHP_CONF_DIR='/usr/local/etc/php/conf.d'
+
+
+WORKDIR /builder
+# Install ioncube
+
+RUN apk add curl tar && curl -o ioncube.tar.gz http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && tar -xvzf ioncube.tar.gz
+
+RUN cp -r /builder/ioncube/ioncube_loader_lin_${PHP_BUILD_VERSION}.so ${PHP_EXTENSION_DIR_OLD}
+
+RUN echo "zend_extension=${PHP_EXTENSION_DIR}/ioncube_loader_lin_${PHP_BUILD_VERSION}.so" > ${PHP_CONF_DIR}/docker-php-ext-ioncube_loader_lin_${PHP_BUILD_VERSION}.ini
+
+FROM ${IMAGE} AS bcmath
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install bcmath
+
+FROM ${IMAGE} AS calendar
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install calendar
+
+FROM ${IMAGE} AS dba
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install dba
+
+FROM ${IMAGE} AS exif
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install exif
+
+FROM ${IMAGE} AS gd
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add libpng-dev
+
+RUN docker-php-ext-install gd
+
+FROM ${IMAGE} AS gettext
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add gettext-dev
+
+RUN docker-php-ext-install gettext
+
+FROM ${IMAGE} AS gmp
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add gmp-dev
+
+RUN docker-php-ext-install gmp
+
+FROM ${IMAGE} AS bz2
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add bzip2-dev
+
+RUN docker-php-ext-install bz2
+
+FROM ${IMAGE} AS imagick
+
+ARG VERSION="3.4.3"
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add libtool imagemagick-dev imagemagick \
+    && curl -fsSL "https://github.com/mkoppanen/imagick/archive/${VERSION}.tar.gz" -o source.tar.gz && mkdir -p /builder && tar -xf source.tar.gz -C /builder --strip-components=1
+
+RUN docker-php-ext-install /builder
+
+FROM ${IMAGE} AS imap
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add imap-dev
+
+RUN docker-php-ext-install imap
+
+FROM ${IMAGE} AS intl
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add icu-dev
+
+RUN docker-php-ext-install intl
+
+FROM ${IMAGE} AS mcrypt
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add libmcrypt-dev
+
+RUN docker-php-ext-install mcrypt
+
+FROM ${IMAGE} AS mysql
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install mysql
+
+FROM ${IMAGE} AS mysqli
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install mysqli
+
+FROM ${IMAGE} AS mysqli
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install mysqli
+
+FROM ${IMAGE} AS pcntl
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install pcntl
+
+FROM ${IMAGE} AS pdo_mysql
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install pdo_mysql
+
+FROM ${IMAGE} AS shmop
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install shmop
+
+FROM ${IMAGE} AS soap
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add libxml2-dev
+
+RUN docker-php-ext-install soap
+
+FROM ${IMAGE} AS sockets
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install sockets
+
+FROM ${IMAGE} AS sysvmsg
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install sysvmsg
+
+FROM ${IMAGE} AS wddx
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add libxml2-dev
+
+RUN docker-php-ext-install wddx
+
+FROM ${IMAGE} AS xmlrpc
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add libxml2-dev
+
+RUN docker-php-ext-install xmlrpc
+
+FROM ${IMAGE} AS opcache
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN docker-php-ext-install opcache
+
+FROM ${IMAGE} AS zip
+
+
+
+WORKDIR /builder
+
+RUN apk update --no-cache
+
+RUN apk add zlib-dev
+
+RUN docker-php-ext-install zip
+
+FROM ${IMAGE}
+
+ENV PHP_EXTENSION_DIR=$PHP_EXTENSION_DIR
+
+ARG PHP_BUILD_VERSION=$PHP_BUILD_VERSION
+ARG PHP_EXTENSION_DIR=$PHP_EXTENSION_DIR
+ARG PHP_EXTENSION_DIR_OLD='/usr/local/lib/php/extensions/*'
+ARG PHP_CONF_DIR='/usr/local/etc/php/conf.d'
+
+ARG LIB_DIR='/usr/lib/'
+
+WORKDIR /builder
+# Fix repo
+#RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+
+RUN apk update --no-cache
+
+COPY --from=ioncube ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=bcmath ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=calendar ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=dba ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=exif ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=gd ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=gettext ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=bz2 ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=imagick ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=imap ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=intl ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=mcrypt ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=mysql ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=mysqli ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=pcntl ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=pdo_mysql ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=shmop ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=soap ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=sockets ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=sysvmsg ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=wddx ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=xmlrpc ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=opcache ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+COPY --from=zip ${PHP_EXTENSION_DIR_OLD} ${PHP_EXTENSION_DIR}
+
+COPY --from=ioncube ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=bcmath ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=calendar ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=dba ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=exif ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=gd ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=gettext ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=bz2 ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=imagick ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=imap ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=intl ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=mcrypt ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=mysql ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=mysqli ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=pcntl ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=pdo_mysql ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=shmop ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=soap ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=sockets ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=sysvmsg ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=wddx ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=xmlrpc ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=opcache ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+COPY --from=zip ${PHP_CONF_DIR} ${PHP_CONF_DIR}
+
+COPY --from=bz2 ${LIB_DIR} ${LIB_DIR}
+COPY --from=gd ${LIB_DIR} ${LIB_DIR}
+COPY --from=gettext ${LIB_DIR} ${LIB_DIR}
+COPY --from=imagick ${LIB_DIR} ${LIB_DIR}
+COPY --from=imap ${LIB_DIR} ${LIB_DIR}
+COPY --from=intl ${LIB_DIR} ${LIB_DIR}
+COPY --from=mcrypt ${LIB_DIR} ${LIB_DIR}
+
+
