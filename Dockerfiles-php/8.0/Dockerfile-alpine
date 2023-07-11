@@ -3,7 +3,6 @@ ARG IMAGE=php:<version>-fpm-alpine
 ARG PHP_BUILD_VERSION=<version>
 ARG PHP_EXTENSION_DIR='php -i | grep "extension_dir" | grep ^extension_dir | cut -d " " -f 3'
 
-
 FROM ${IMAGE} AS ioncube
 
 ARG PHP_EXTENSION_DIR=$PHP_EXTENSION_DIR
@@ -15,15 +14,13 @@ ARG PHP_CONF_DIR='/usr/local/etc/php/conf.d'
 WORKDIR /builder
 # Install ioncube
 
-RUN apk add curl tar && curl -o ioncube.tar.gz http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz && tar -xvzf ioncube.tar.gz
+RUN apk add curl tar && arch=$(arch | sed s/aarch64/aarch64/ | sed s/x86_64/x86-64/) && curl -o ioncube.tar.gz http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_${arch}.tar.gz && tar -xvzf ioncube.tar.gz
 
 RUN cp -r /builder/ioncube/ioncube_loader_lin_${PHP_BUILD_VERSION}.so ${PHP_EXTENSION_DIR_OLD}
 
 RUN echo "zend_extension=${PHP_EXTENSION_DIR}/ioncube_loader_lin_${PHP_BUILD_VERSION}.so" > ${PHP_CONF_DIR}/docker-php-ext-ioncube_loader_lin_${PHP_BUILD_VERSION}.ini
 
 FROM ${IMAGE} AS bcmath
-
-
 
 WORKDIR /builder
 
@@ -301,7 +298,6 @@ FROM ${IMAGE}
 
 ENV PHP_EXTENSION_DIR=$PHP_EXTENSION_DIR
 
-ARG PHP_BUILD_VERSION=$PHP_BUILD_VERSION
 ARG PHP_EXTENSION_DIR=$PHP_EXTENSION_DIR
 ARG PHP_EXTENSION_DIR_OLD='/usr/local/lib/php/extensions/*'
 ARG PHP_CONF_DIR='/usr/local/etc/php/conf.d'
@@ -309,8 +305,6 @@ ARG PHP_CONF_DIR='/usr/local/etc/php/conf.d'
 ARG LIB_DIR='/usr/lib/'
 
 WORKDIR /builder
-# Fix repo
-#RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
 
 RUN apk update --no-cache
 
