@@ -16,7 +16,7 @@ WORKDIR /builder
 
 RUN apk update --no-cache
 
-RUN apk add curl tar && arch=$(arch | sed s/aarch64/aarch64/ | sed s/x86_64/x86-64/) && curl -o ioncube.tar.gz http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_${arch}.tar.gz && tar -xvzf ioncube.tar.gz
+RUN apk add curl tar && arch_type=$(uname -m | sed s/aarch64/aarch64/ | sed s/x86_64/x86-64/) && curl -o ioncube.tar.gz http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_${arch_type}.tar.gz && tar -xvzf ioncube.tar.gz
 
 RUN cp -r /builder/ioncube/ioncube_loader_lin_${PHP_BUILD_VERSION}.so ${PHP_EXTENSION_DIR_OLD}
 
