@@ -1,9 +1,10 @@
-name: Build
+name: Test
 
 on:
   push:
     branches:
-      - dev
+      - main
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -11,7 +12,7 @@ concurrency:
 
 env:
   IMAGE_NAME: php-modules
-  PUSH: true
+  PUSH: false
 
 jobs:
   build:
